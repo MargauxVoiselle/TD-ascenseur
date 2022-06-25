@@ -59,105 +59,62 @@ void DisplayBuilding(WINDOW *win, Building *b) {
 
 int main() {
     srand(time(NULL));   // ne doit être appelée qu'une seule fois
-
     
-    // génération de la liste d'attente de personnes pour tous les étages -- OK --
+    // génération de la liste d'attente de personnes pour tous les étages
     int nbFloor = 5;
-    // int lengthList = 0;
     PersonList **waitingLists = malloc(nbFloor*sizeof(PersonList*));
     for(int currentFloor = 0 ; currentFloor < nbFloor ; currentFloor++) {
         waitingLists[currentFloor] = NULL; // initialise la liste de personnes de l'étage currentFloor
         int nbPerson = 5; // 5 personnes dans la file d'attente waitingLists[currentFloor]
         for(int j = 0 ; j < nbPerson ; j++) {
-            printf("Coucou\n");
             int dest = rand() % (nbFloor); // création d'une destination au hasard entre 0 et 5
             Person *p = createPerson(currentFloor, dest);
             waitingLists[currentFloor] = insert(p, waitingLists[currentFloor]);
         }
-        // printPersonList(waitingLists[currentFloor]); // affiche la liste de personnes en attente dans chaque étage
-        // lengthList = lengthPersonList(waitingLists[currentFloor]);
-        // printf("Il y a %d personnes dans la file d'attente !\n", lengthList);
     }
     
     
-    // initialisation de l'immeuble et de l'ascenseur --OK--
+    // initialisation de l'immeuble et de l'ascenseur
     int capacity = 3;
     int currentFloor = 0;
     Elevator *elevator = create_elevator(capacity, currentFloor , NULL);
     Building *building = create_building(nbFloor, elevator, waitingLists);
 
-    // test
-    // PersonList *persons = NULL;
-    // Person *person = createPerson(0, 1);
-    // persons = insert(person, persons);
-    // person = createPerson(0, 2);
-    // persons = insert(person, persons);
-    // printf("Les personnes dans l'ascenseur sont :");
-    // printPersonList(persons);
-    // Elevator *elevator = create_elevator(4, 0, persons);
-    // elevator->currentFloor = 1;
-    // PersonList *personsLeaving = exitElevator(elevator);
-    // printf("Les personnes qui sortent sont : \n");
-    // printPersonList(personsLeaving);
-    // printf("Les personnes qui restent sont :\n");
-    // printPersonList(elevator->persons);
-    // int length = lengthPersonList(elevator->persons);
-    // printf("%d\n", length);
-    // Elevator *elevator = create_elevator(4, 0, persons);
-    // PersonList *peopleInWaitingList = NULL;
-    // person = createPerson(0, 3);
-    // peopleInWaitingList = insert(person, peopleInWaitingList);
-    // person = createPerson(0, 2);
-    // peopleInWaitingList = insert(person, peopleInWaitingList);
-    // person = createPerson(0, 1);
-    // peopleInWaitingList = insert(person, peopleInWaitingList);
-    // printf("Les personnes attendant sont :\n");
-    // printPersonList(peopleInWaitingList);
-    // printf("--------------\n");
-    // printf("Les personnes dans l'ascenseur sont : \n");
-    // printPersonList(elevator->persons);
-    // PersonList *waitingList = enterElevator(elevator, peopleInWaitingList);
-    // printf("Les personnes attendant maintenant sont :\n");
-    // printPersonList(waitingList);
-    // printf("Les personnes dans l'ascenseur sont : \n");
-    // printPersonList(elevator->persons);
+    // Initialize ncurse display
+    initscr(); // initialize ncurses
+    noecho();  // do not display in window the pressed keys
+    halfdelay(2);
 
+    WINDOW *win = newwin(HEIGHT, WIDTH, 0, 0);
 
-  // Initialize ncurse display
-  initscr(); // initialize ncurses
-  noecho();  // do not display in window the pressed keys
-  halfdelay(2);
+    // Animation loop
+    bool run=true;
+    while(run) {
+        // Generate people in function of input (or quit if 'q')
+        int input = wgetch(win);
+        if(input == 'q') {
+        run = false;
+        } else {
+        int level = input - '0';
+        if(0 <= level && level < nbFloor) {
+        building->elevator->targetFloor = level;
+        }
+        }
 
-  WINDOW *win = newwin(HEIGHT, WIDTH, 0, 0);
+        // Update state machine of elevator !!!!
 
-  // Animation loop
-  bool run=true;
-  while(run) {
-    // Generate people in function of input (or quit if 'q')
-    int input = wgetch(win);
-    if(input == 'q') {
-      run = false;
-    } else {
-      int level = input - '0';
-      if(0 <= level && level < nbFloor) {
-	building->elevator->targetFloor = level;
-      }
+        stepElevator(building);
+
+        wclear(win);   // clear display area
+        box(win, 0,0); // display border of window
+
+        DisplayBuilding(win, building);
+
+        wrefresh(win); // actual display function
+
     }
 
-    // Update state machine of elevator !!!!
+    endwin(); // correct ending of ncurses
 
-    stepElevator(building);
-
-    wclear(win);   // clear display area
-    box(win, 0,0); // display border of window
-
-    DisplayBuilding(win, building);
-
-    wrefresh(win); // actual display function
-
-  }
-
-  endwin(); // correct ending of ncurses
-
-  return 0;
+    return 0;
 }

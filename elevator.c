@@ -54,12 +54,9 @@ PersonList* enterElevator(Elevator *elevator, PersonList *waitingList){
     int currentFloor = elevator->currentFloor;
     PersonList *personsInElevator = elevator->persons;
     int lengthPeopleInElevator = lengthPersonList(personsInElevator);
-    Person *nextPeopleEntering = waitingList->person;
-    while((lengthPeopleInElevator != elevator->capacity) && (lengthWaitingList != 0)){
-        personsInElevator = insert(nextPeopleEntering, personsInElevator);
+    while(lengthPeopleInElevator != elevator->capacity && waitingList){
+        personsInElevator = insert(waitingList->person, personsInElevator);
         waitingList = waitingList->next;
-        nextPeopleEntering = waitingList->person;
-        lengthWaitingList--;
         lengthPeopleInElevator++;
     }
     elevator->persons = personsInElevator;
@@ -70,6 +67,7 @@ PersonList* enterElevator(Elevator *elevator, PersonList *waitingList){
 void stepElevator(Building *building){
     if (building->elevator->currentFloor == building->elevator->targetFloor){
         exitElevator(building->elevator);
+        int lengthCurrentWaitingList = lengthPersonList(*(building->waitingLists + building->elevator->currentFloor));
         *(building->waitingLists + building->elevator->currentFloor) = enterElevator(building->elevator, *(building->waitingLists + building->elevator->currentFloor));
     }
     else if (building->elevator->currentFloor > building->elevator->targetFloor){
