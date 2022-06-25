@@ -36,10 +36,15 @@ void printPersonList(PersonList *list){
 
 // renvoie le nombre de personnes dans une liste de personnes
 int lengthPersonList(PersonList *list){
-    int length = 1; // on prend déjà en compte le dernier élément de la liste chainée
-    while(list->next != NULL){
+    int length = 0;
+    while(list){
         length++;
         list = list->next;
     }
+    // int length = 1; // on prend déjà en compte le dernier élément de la liste chainée
+    // while(list->next != NULL){
+    //     length++;
+    //     list = list->next;
+    // }
     return length;
 }
