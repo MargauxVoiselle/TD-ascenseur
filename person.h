@@ -1,6 +1,9 @@
 #ifndef PERSON_H
 #define PERSON_H
 
+#include <stdio.h>
+#include <stdlib.h>
+
 // Initialisation de la structure pour les personnes
 typedef struct _Person {
     int src; // étage source
@@ -15,11 +18,13 @@ typedef struct _PersonList {
 
 Person* createPerson(int src, int dest);
 PersonList* insert(Person *p, PersonList *list);
+int lengthPersonList(PersonList *list);
 
-// pour mes tests
+#ifdef TEST
+
 void printPerson(Person *person);
 void printPersonList(PersonList *list);
 
-int lengthPersonList(PersonList *list);
+#endif
 
 #endif

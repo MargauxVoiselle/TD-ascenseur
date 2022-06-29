@@ -1,6 +1,9 @@
 #ifndef ELEVATOR_H
 #define ELEVATOR_H
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "person.h"
 
 // Initialisation de la structure de l'ascenseur
@@ -9,6 +12,12 @@ typedef struct _Elevator {
     int currentFloor; // étage actuel
     int targetFloor; // destination
     PersonList *persons; // personnes dans la cabine
+    /*
+     * variable servant à gérer les problèmes de clignotements
+     * entre les personnes dans l'ascenseur lors de l'affichage
+     * car la fonction exitElevator est appelée en boucle
+     */
+    int update;
 } Elevator;
 
 // Initialisation de l'immeuble
