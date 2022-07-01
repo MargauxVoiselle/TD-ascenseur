@@ -8,6 +8,7 @@ Elevator *create_elevator(int capacity, int currentFloor, PersonList *persons)
     elevator->currentFloor = currentFloor;
     elevator->persons = persons;
     elevator->update = 0;
+    elevator->goal = 0;
 
     return elevator;
 }
@@ -40,6 +41,7 @@ PersonList *exitElevator(Elevator *elevator)
             // si la personne doit descendre à cet étage
             if (currentPerson->dest == currentFloor){
                 personsLeaving = insert(currentPerson, personsLeaving);
+                elevator->goal++;
             }
             // si la personne ne descend pas à cet étage, elle reste
             else {
