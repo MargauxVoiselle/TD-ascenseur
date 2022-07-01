@@ -13,11 +13,11 @@ int main()
     
     // génération de la liste d'attente de personnes pour tous les étages
     int nbFloor = 5;
+    int nbPerson = 5; // par étage initialement
     PersonList **waitingLists = malloc(nbFloor*sizeof(PersonList*));
     for(int currentFloor = 0 ; currentFloor < nbFloor ; currentFloor++)
     {
         waitingLists[currentFloor] = NULL; // initialise la liste de personnes de l'étage currentFloor
-        int nbPerson = 5; // 5 personnes dans la file d'attente waitingLists[currentFloor]
         for(int j = 0 ; j < nbPerson ; j++)
         {
             int dest = rand() % (nbFloor); // création d'une destination au hasard entre 0 et 5
@@ -72,6 +72,20 @@ int main()
     }
 
     endwin(); // correct ending of ncurses
+
+    printf("%d persons out of %d reached their stage !\n", elevator->goal, nbFloor * nbPerson);
+    if (elevator->goal == nbFloor * nbPerson)
+    {
+        printf("==========================\n");
+        printf("Congratulations, you won !\n");
+        printf("==========================\n");
+    }
+    else
+    {
+        printf("===============================\n");
+        printf("Oh no ... You lost, try again !\n");
+        printf("===============================\n");
+    }
     
     return 0;
 }

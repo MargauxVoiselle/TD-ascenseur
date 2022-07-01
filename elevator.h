@@ -12,12 +12,8 @@ typedef struct _Elevator {
     int currentFloor; // étage actuel
     int targetFloor; // destination
     PersonList *persons; // personnes dans la cabine
-    /*
-     * variable servant à gérer les problèmes de clignotements
-     * entre les personnes dans l'ascenseur lors de l'affichage
-     * car la fonction exitElevator est appelée en boucle
-     */
-    int update;
+    int update; // variable servant à gérer les problèmes de clignotements entre les personnes dans l'ascenseur lors de l'affichage car la fonction exitElevator est appelée en boucle
+    int goal; // variable comptabilisant le nombre de personnes ayant atteint leur étage
 } Elevator;
 
 // Initialisation de l'immeuble
