@@ -1,6 +1,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <ncurses.h>
+#include <time.h>
 
 #include "display.h"
 #include "elevator.h"
@@ -39,6 +40,7 @@ int main()
 
     WINDOW *win = newwin(HEIGHT, WIDTH, 0, 0);
 
+    time_t start = time(NULL);
     // Animation loop
     bool run=true;
     while(run)
@@ -73,6 +75,8 @@ int main()
 
     endwin(); // correct ending of ncurses
 
+    printf("The game lasted %lds\n", time(NULL) - start);
+    
     printf("%d persons out of %d reached their stage !\n", elevator->goal, nbFloor * nbPerson);
     if (elevator->goal == nbFloor * nbPerson)
     {
