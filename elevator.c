@@ -29,30 +29,49 @@ PersonList *exitElevator(Elevator *elevator)
 {
     if (!(elevator->update))
     {
+        // Ancienne version de la fonction
+        // PersonList *personsInElevator = elevator->persons; // personnes dans l'ascenseur
+        // int countOfPeopleInElevator = lengthPersonList(personsInElevator);
+        // Person *currentPerson = NULL;
+        //
+        // // pour toutes les personnes dans l'ascenseur
+        // for (int i = 0 ; i < countOfPeopleInElevator ; i++){
+        //     currentPerson = personsInElevator->person;
+        //     // si la personne doit descendre à cet étage
+        //     if (currentPerson->dest == currentFloor){
+        //         personsLeaving = insert(currentPerson, personsLeaving);
+        //         elevator->goal++;
+        //     }
+        //     // si la personne ne descend pas à cet étage, elle reste
+        //     else {
+        //         personsStaying = insert(currentPerson, personsStaying);
+        //     }
+        //     personsInElevator = personsInElevator->next;
+        // }
+
+        // Nouvelle version de la fonction (améliorée)
         PersonList *personsLeaving = NULL;
         PersonList *personsStaying = NULL;
-        int currentFloor = elevator->currentFloor; // étage de l'ascenseur
-        PersonList *personsInElevator = elevator->persons; // personnes dans l'ascenseur
-        int countOfPeopleInElevator = lengthPersonList(personsInElevator);
-        Person *currentPerson = NULL;
-        // pour toutes les personnes dans l'ascenseur
-        for (int i = 0 ; i < countOfPeopleInElevator ; i++){
-            currentPerson = personsInElevator->person;
-            // si la personne doit descendre à cet étage
-            if (currentPerson->dest == currentFloor){
-                personsLeaving = insert(currentPerson, personsLeaving);
+        int currentFloor = elevator->currentFloor; // étage actuel de l'ascenseur
+
+        while (elevator->persons)
+        {
+            if (elevator->persons->person->dest == currentFloor)
+            {
+                personsLeaving = insert(elevator->persons->person, personsLeaving);
                 elevator->goal++;
             }
-            // si la personne ne descend pas à cet étage, elle reste
-            else {
-                personsStaying = insert(currentPerson, personsStaying);
+            else
+            {
+                personsStaying = insert(elevator->persons->person, personsStaying);
             }
-            personsInElevator = personsInElevator->next;
+            elevator->persons = elevator->persons->next;
         }
+
         // mise à jour des personnes restantes dans l'ascenseur
         elevator->persons = personsStaying;
-
         elevator->update = 1;
+
         return personsLeaving;
     }
     else
@@ -64,20 +83,24 @@ PersonList *exitElevator(Elevator *elevator)
 // fait entrer dans l'ascenseur les personnes qui attendent (sans dépasser la capacité de l'ascenseur) et renvoie la nouvelle liste d'attente
 PersonList* enterElevator(Elevator *elevator, PersonList *waitingList)
 {
-    int lengthWaitingList = lengthPersonList(waitingList);
     int currentFloor = elevator->currentFloor;
     PersonList *personsInElevator = elevator->persons;
     int lengthPeopleInElevator = lengthPersonList(personsInElevator);
+
     while (lengthPeopleInElevator != elevator->capacity && waitingList)
     {
         personsInElevator = insert(waitingList->person, personsInElevator);
+
+        // permet l'actualisation de l'ascenseur lorsque la fonction exitElevator a déjà été appelée
         if (waitingList->person->dest == elevator->currentFloor)
         {
             elevator->update = 0;
         }
+
         waitingList = waitingList->next;
         lengthPeopleInElevator++;
     }
+
     elevator->persons = personsInElevator;
 
     return waitingList;
