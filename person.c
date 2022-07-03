@@ -24,7 +24,7 @@ PersonList* insert(Person *person, PersonList *list)
 int lengthPersonList(PersonList *list)
 {
     int length = 0;
-    while(list)
+    while (list)
     {
         length++;
         list = list->next;
@@ -39,7 +39,7 @@ int lengthPersonList(PersonList *list)
 // affiche une liste de personnes
 void printPersonList(PersonList *list)
 {
-    while(list)
+    while (list)
     {
         printPerson(list->person);
         list = list->next;
